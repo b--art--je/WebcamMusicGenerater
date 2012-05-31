@@ -24,6 +24,9 @@ class testApp : public ofBaseApp{
 		ofSoundPlayer drums;
 		ofSoundPlayer synth;
 		ofSoundPlayer vocals;
+	
+		ofTrueTypeFont font;
+		float synthPosition;
 
 	
 		ofxCvColorImage rgb,hsb;
