@@ -21,12 +21,16 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 		ofVideoGrabber Webcam;
+		ofSoundPlayer drums;
+		ofSoundPlayer synth;
+		ofSoundPlayer vocals;
 
 	
-	ofxCvColorImage rgb,hsb;
-	ofxCvGrayscaleImage hue,sat,bri,filtered;
-	ofxCvContourFinder contours;
+		ofxCvColorImage rgb,hsb;
+		ofxCvGrayscaleImage hue,sat,bri,filtered;
+		ofxCvContourFinder contours;
 	
-	int w,h;
-	int findHue;
+		int w,h;
+		int findHue;
+
 };

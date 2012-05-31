@@ -2,10 +2,8 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-	//Webcam.initGrabber(1024, 768);
-	//Webcam.videoSettings();
-	
 	ofBackground(0, 0, 0);
+	
 	
 	w = 320;
 	h = 240;
@@ -20,6 +18,14 @@ void testApp::setup(){
 	sat.allocate(w, h);
 	bri.allocate(w, h);
 	filtered.allocate(w, h);
+	
+	synth.loadSound("sound/synth.wav");
+	drums.loadSound("sound/beat.wav");
+	vocals.loadSound("sound/vocals.wav");
+	synth.setVolume(0.75f);
+	drums.setVolume(0.75f);
+	vocals.setVolume(0.75f);
+	
 	
 }
 
@@ -48,7 +54,7 @@ void testApp::update(){
 		
 		//filter image based on the hue value were looking for
 		for (int i=0; i<w*h; i++) {
-			filtered.getPixels() [i] = ofInRange(hue.getPixels()[i], findHue-5, findHue+5) ? 255 : 0;
+			filtered.getPixels()[i] = ofInRange(hue.getPixels()[i], findHue-5, findHue+5) ? 255 : 0;
 		}
 		
 		filtered.flagImageChanged();
@@ -58,11 +64,16 @@ void testApp::update(){
 		contours.findContours(filtered, 50, w*h/2, 1, false);
 		
 	}	
+	
+	// update the sound playing system
+	ofSoundUpdate();
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
 	ofSetColor(255, 255, 255);
+	
+	char tempStr[255];
 	
 	//draw all cv images
 	rgb.draw(0,0);
@@ -80,8 +91,19 @@ void testApp::draw() {
 
 	//draw red circels for found blobs
 	for (int i=0; i<contours.nBlobs; i++) {
-		ofCircle(contours.blobs[i].centroid.x, contours.blobs[i].centroid.y, 20);	
+		ofCircle(contours.blobs[i].centroid.x, contours.blobs[i].centroid.y, 10);	
 	}
+	
+	float widthDiv = ofGetWindowWidth() /3.0f;
+	
+	// draw synth
+	ofDrawBitmapString(tempStr, 50,ofGetHeight()-50);
+	
+	//draw drums
+	ofDrawBitmapString(tempStr, widthDiv+50,ofGetHeight()-50);
+	
+	//draw vocals
+	ofDrawBitmapString(tempStr, widthDiv*2+50,ofGetHeight()-50);
 }
 
 //--------------------------------------------------------------
@@ -106,7 +128,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-	
+	/*
 	//calculate local mouse x,y in image
 
 	int mx = x % w;
@@ -114,6 +136,27 @@ void testApp::mousePressed(int x, int y, int button){
 	
 	//get hue value on mouse position
 	findHue = hue.getPixels()[my*w+mx];
+	*/
+	 
+	// Set mousetrigger postitions for sample playing
+	float widthStep	=	ofGetWindowWidth() / 3.0f;
+	if (x < widthStep) {
+		float pct = x / widthStep;
+		synth.play();
+		synth.setSpeed(1);
+		synth.setPan(pct);
+	}
+	else if (x >= widthStep && x < widthStep*2){
+		drums.play();
+		drums.setSpeed(1);
+		drums.setPan(1);
+	}
+	else {
+		vocals.play();
+		vocals.setSpeed(1);
+		vocals.setPan(1);
+	}
+
 
 }
 
